@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#f8f7ff;padding-bottom:110px}
+.hero{background:linear-gradient(160deg,#7c3aed,#ec4899);color:#fff;padding:30px 16px 24px;border-radius:0 0 28px 28px;text-align:center}
+.hero h1{font-size:34px}.hero p{margin-top:8px}
+.card{background:#fff;margin:14px;border-radius:20px;overflow:hidden;box-shadow:0 10px 22px rgba(0,0,0,.08)}
+.card img{width:100%;height:140px;object-fit:cover}
+.info{padding:14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.info b{font-size:19px}.info small{color:#888}
+.price{font-size:20px;font-weight:900;color:#7c3aed;white-space:nowrap}
+.add{display:block;background:#111;color:#fff;border:0;width:calc(100% - 28px);margin:0 14px 14px;padding:13px;border-radius:12px;font-size:18px;font-weight:900;cursor:pointer}
+.add.active{background:#22c55e}
+.pay{background:#fff;margin:14px;border-radius:20px;padding:18px;text-align:center;border:2px dashed #7c3aed}
+.pay h2{font-size:22px;margin-bottom:8px}
+.pay .num{background:#f3e8ff;padding:12px;border-radius:12px;font-size:24px;font-weight:900;letter-spacing:1px;margin:10px 0}
+.pay p{color:#555;line-height:1.6}
+.pay .copy{background:#7c3aed;color:#fff;border:0;padding:10px 20px;border-radius:10px;font-weight:900;cursor:pointer;font-size:16px}
+.cart{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:14px 16px;box-shadow:0 -10px 30px rgba(0,0,0,.15);border-radius:20px 20px 0 0}
+.cart b{font-size:18px}
+.cart small{color:#888;display:block;margin:4px 0 10px}
+.checkout{display:block;background:#22c55e;color:#fff;text-align:center;text-decoration:none;padding:15px;border-radius:14px;font-size:20px;font-weight:900}
+.clear{background:none;border:0;color:#ef4444;font-weight:900;float:left;cursor:pointer}
+.call{display:block;background:#fff;color:#111;text-align:center;text-decoration:none;padding:12px;border-radius:12px;font-weight:900;margin:14px;border:2px solid #111}
+</style>
+</head>
+<body>
+<div class="hero"><h1>برمجيات لمسة ✨</h1><p>اختاري خدماتك وحطيها بالسلة، وابعتيلي طلبك واتساب</p></div>
+<a class="call" href="tel:+972595300242">📞 اتصلي فينا: 0595300242</a>
+<div id="list"></div>
+
+<div class="pay">
+<h2>💳 طريقة الدفع - جوال باي</h2>
+<p>ادفعي بسهولة عن طريق جوال باي على هاد الرقم:</p>
+<div class="num">0595300242</div>
+<button class="copy" onclick="navigator.clipboard.writeText('0595300242');this.textContent='تم النسخ ✓'">📋 انسخي الرقم</button>
+<p style="margin-top:12px"><b>خطوات الدفع:</b><br>1. افتحي تطبيق جوال باي<br>2. حولي المبلغ على الرقم فوق<br>3. ابعتيلي صورة التحويل على واتساب<br>✅ وببلش بشغلك فوراً</p>
+</div>
+
+<div class="cart">
+<button class="clear" onclick="clearCart()">مسح السلة</button>
+<b>🛒 السلة: <span id="count">0</span> خدمة | المجموع: <span id="total">0</span> شيكل</b>
+<small id="items">لسا ما اخترتي شي</small>
+<a class="checkout" id="wa" href="#">اطلبي عبر واتساب 💬</a>
+</div>
+
+<script>
+const services=[
+{name:"كتالوج بسيط",desc:"منتجاتك، أسعارك، زر واتساب",price:150,img:"https://images.unsplash.com/photo-1542838132-92c53300491e?w=600&q=80"},
+{name:"صفحة محل / مطعم + منيو",desc:"منيو بصور + زر طلب",price:200,img:"https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&q=80"},
+{name:"موقع كامل + واتساب",desc:"موقع احترافي كامل لشغلك",price:300,img:"https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&q=80"},
+{name:"متجر الكتروني",desc:"الزبون بيختار وبطلب من الموقع",price:400,img:"https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?w=600&q=80"},
+{name:"شعار + هوية",desc:"شعار خاص فيك بألوانك",price:100,img:"https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&q=80"},
+];
+let cart=[];
+const list=document.getElementById('list');
+services.forEach((s,i)=>{
+list.innerHTML+=`<div class="card"><img src="${s.img}"><div class="info"><div><b>${s.name}</b><br><small>${s.desc}</small></div><div class="price">${s.price} شيكل</div></div><button class="add" id="btn${i}" onclick="toggle(${i})">+ أضيفي للسلة</button></div>`;
+});
+function toggle(i){
+let idx=cart.indexOf(i);
+if(idx>-1){cart.splice(idx,1);document.getElementById('btn'+i).textContent='+ أضيفي للسلة';document.getElementById('btn'+i).classList.remove('active');}
+else{cart.push(i);document.getElementById('btn'+i).textContent='✓ بالسلة - اضغطي للإزالة';document.getElementById('btn'+i).classList.add('active');}
+update();
+}
+function clearCart(){cart=[];document.querySelectorAll('.add').forEach(b=>{b.textContent='+ أضيفي للسلة';b.classList.remove('active')});update();}
+function update(){
+let total=0, names=[];
+cart.forEach(i=>{total+=services[i].price;names.push(services[i].name+' ('+services[i].price+')')});
+document.getElementById('count').textContent=cart.length;
+document.getElementById('total').textContent=total;
+document.getElementById('items').textContent=cart.length?names.join(' + '):'لسا ما اخترتي شي';
+let msg='مرحبا لمسة ✨ بدي اطلب هاي الخدمات:%0A'+names.join('%0A')+'%0Aالمجموع: '+total+' شيكل%0A%0Aورح ادفع عن طريق جوال باي';
+document.getElementById('wa').href='https://wa.me/972595300242?text='+msg;
+}
+update();
+</script>
+</body>
+</html>
